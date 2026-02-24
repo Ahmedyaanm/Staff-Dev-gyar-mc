@@ -13,6 +13,7 @@
         }
 
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
         body {
             font-family: 'Cairo', sans-serif;
@@ -21,9 +22,13 @@
             padding: 30px 20px;
             display: flex;
             justify-content: center;
+            transition: all 0.2s ease;
         }
 
-        /* أنيميشن بسيط جداً */
+        body.en {
+            font-family: 'Poppins', sans-serif;
+        }
+
         @keyframes softFade {
             from { opacity: 0; transform: translateY(3px); }
             to { opacity: 1; transform: translateY(0); }
@@ -38,12 +43,55 @@
             padding: 35px;
             animation: softFade 0.3s ease;
             border: 1px solid #e9eef2;
+            position: relative;
+        }
+
+        /* Language Switch */
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+
+        .lang-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            color: #475569;
+        }
+
+        .lang-btn:hover {
+            border-color: #10b981;
+            background: #f0fdf4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .lang-btn i {
+            font-size: 16px;
+            color: #10b981;
+        }
+
+        .lang-btn span {
+            min-width: 45px;
+            text-align: center;
         }
 
         /* Header */
         .header {
             text-align: center;
             margin-bottom: 30px;
+            margin-top: 15px;
         }
 
         .header h1 {
@@ -106,7 +154,7 @@
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             font-size: 14px;
-            font-family: 'Cairo', sans-serif;
+            font-family: inherit;
             transition: all 0.15s;
         }
 
@@ -243,7 +291,7 @@
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             font-size: 14px;
-            font-family: 'Cairo', sans-serif;
+            font-family: inherit;
             resize: vertical;
             min-height: 90px;
         }
@@ -344,79 +392,116 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* RTL/LTR adjustments */
+        body.en .lang-switch {
+            left: auto;
+            right: 20px;
+        }
+
+        body.en .header h1 i {
+            margin-left: 0;
+            margin-right: 8px;
+        }
+
+        body.en .input-group label i {
+            margin-left: 0;
+            margin-right: 5px;
+        }
+
+        body.en .question-header {
+            flex-direction: row-reverse;
+        }
+
+        body.en .section-header {
+            flex-direction: row-reverse;
+        }
     </style>
 </head>
-<body>
+<body dir="rtl">
     <div class="container">
+        <!-- Language Switch Button -->
+        <div class="lang-switch">
+            <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">
+                <i class="fas fa-globe"></i>
+                <span id="langText">EN</span>
+                <i class="fas fa-chevron-down" style="font-size: 12px; opacity: 0.7;"></i>
+            </button>
+        </div>
+
         <!-- Header -->
         <div class="header">
-            <h1><i class="fas fa-crown"></i> Algayar</h1>
-            <p>التقديم للإدارة - املأ المعلومات وأجب على الأسئلة</p>
+            <h1 id="siteTitle"><i class="fas fa-crown"></i> Algayar</h1>
+            <p id="siteSubtitle">التقديم للإدارة - املأ المعلومات وأجب على الأسئلة</p>
         </div>
 
         <!-- Alert -->
         <div class="alert" id="alertMessage"></div>
 
+        <!-- Test Button -->
+        <button class="test-btn" onclick="testWebhook()" id="testBtn">
+            <i class="fab fa-discord"></i>
+            <span id="testBtnText">اختبار Discord</span>
+        </button>
 
-    
         <!-- Form -->
         <form id="applicationForm">
             <!-- Personal Info -->
             <div class="info-grid">
                 <div class="input-group">
-                    <label><i class="fas fa-user"></i> الاسم</label>
+                    <label id="nameLabel"><i class="fas fa-user"></i> <span>الاسم</span></label>
                     <input type="text" id="fullname" placeholder="محمد أحمد">
                 </div>
                 <div class="input-group">
-                    <label><i class="fas fa-calendar"></i> العمر</label>
+                    <label id="ageLabel"><i class="fas fa-calendar"></i> <span>العمر</span></label>
                     <input type="number" id="age" placeholder="18" min="13">
                 </div>
                 <div class="input-group">
-                    <label><i class="fas fa-cube"></i> ماين كرافت</label>
+                    <label id="mcLabel"><i class="fas fa-cube"></i> <span>ماين كرافت</span></label>
                     <input type="text" id="minecraft" placeholder="Ahmed_123">
                 </div>
                 <div class="input-group">
-                    <label><i class="fab fa-discord"></i> ديسكورد</label>
+                    <label id="discordLabel"><i class="fab fa-discord"></i> <span>ديسكورد</span></label>
                     <input type="text" id="discord" placeholder="ahmed#1234">
                 </div>
                 <div class="input-group">
-                    <label><i class="fas fa-star"></i> الخبرة</label>
+                    <label id="expLabel"><i class="fas fa-star"></i> <span>الخبرة</span></label>
                     <select id="experience">
-                        <option value="">اختر</option>
-                        <option value="مبتدئ">مبتدئ</option>
-                        <option value="متوسط">متوسط</option>
-                        <option value="متقدم">متقدم</option>
-                        <option value="خبير">خبير</option>
+                        <option value="" id="expDefault">اختر</option>
+                        <option value="مبتدئ" id="expBeginner">مبتدئ</option>
+                        <option value="متوسط" id="expIntermediate">متوسط</option>
+                        <option value="متقدم" id="expAdvanced">متقدم</option>
+                        <option value="خبير" id="expExpert">خبير</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label><i class="fas fa-clock"></i> التفاعل</label>
+                    <label id="interactLabel"><i class="fas fa-clock"></i> <span>التفاعل</span></label>
                     <select id="interaction">
-                        <option value="">اختر</option>
-                        <option value="1-3 ساعات">1-3 ساعات</option>
-                        <option value="3-6 ساعات">3-6 ساعات</option>
-                        <option value="6-9 ساعات">6-9 ساعات</option>
-                        <option value="9+ ساعات">9+ ساعات</option>
+                        <option value="" id="interactDefault">اختر</option>
+                        <option value="1-3 ساعات" id="interact1">1-3 ساعات</option>
+                        <option value="3-6 ساعات" id="interact2">3-6 ساعات</option>
+                        <option value="6-9 ساعات" id="interact3">6-9 ساعات</option>
+                        <option value="9+ ساعات" id="interact4">9+ ساعات</option>
                     </select>
                 </div>
             </div>
 
             <!-- Role Selection -->
             <div class="role-section">
-                <div class="role-title">اختر المنصب:</div>
+                <div class="role-title" id="roleTitle">اختر المنصب:</div>
                 <div class="role-options">
                     <div class="role-option">
                         <input type="radio" name="role" id="dev" value="developer">
                         <label for="dev">
                             <i class="fas fa-code"></i>
-                            <span>مطور</span>
+                            <span id="devRole">مطور</span>
                         </label>
                     </div>
                     <div class="role-option">
                         <input type="radio" name="role" id="staff" value="staff">
                         <label for="staff">
                             <i class="fas fa-shield-alt"></i>
-                            <span>إداري</span>
+                            <span id="staffRole">إداري</span>
                         </label>
                     </div>
                 </div>
@@ -426,13 +511,13 @@
             <div id="staffQuestions" class="questions-section">
                 <div class="section-header">
                     <i class="fas fa-shield-alt"></i>
-                    <h3>أسئلة الإداريين</h3>
+                    <h3 id="staffQTitle">أسئلة الإداريين</h3>
                 </div>
 
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">1</span>
-                        <h4>كيف تتعامل مع لاعب يخالف القوانين؟</h4>
+                        <h4 id="staffQ1">كيف تتعامل مع لاعب يخالف القوانين؟</h4>
                     </div>
                     <textarea id="staff_q1" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -440,7 +525,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">2</span>
-                        <h4>ماذا تفعل في شجار بين لاعبين؟</h4>
+                        <h4 id="staffQ2">ماذا تفعل في شجار بين لاعبين؟</h4>
                     </div>
                     <textarea id="staff_q2" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -448,7 +533,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">3</span>
-                        <h4>كيف تتصرف مع لاعب يستخدم برامج غش؟</h4>
+                        <h4 id="staffQ3">كيف تتصرف مع لاعب يستخدم برامج غش؟</h4>
                     </div>
                     <textarea id="staff_q3" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -456,7 +541,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">4</span>
-                        <h4>هل مستعد أن تنزل فيديوهات يوميًا (إجباري)</h4>
+                        <h4 id="staffQ4">صديقك يخالف القوانين، ماذا تفعل؟</h4>
                     </div>
                     <textarea id="staff_q4" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -464,7 +549,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">5</span>
-                        <h4>كيف تنشر الأجواء الإيجابية؟</h4>
+                        <h4 id="staffQ5">كيف تنشر الأجواء الإيجابية؟</h4>
                     </div>
                     <textarea id="staff_q5" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -472,7 +557,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">6</span>
-                        <h4>كيف تتعامل مع شكوى ضد إداري؟</h4>
+                        <h4 id="staffQ6">كيف تتعامل مع شكوى ضد إداري؟</h4>
                     </div>
                     <textarea id="staff_q6" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -480,7 +565,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">7</span>
-                        <h4>ما هي أولوياتك كإداري؟</h4>
+                        <h4 id="staffQ7">ما هي أولوياتك كإداري؟</h4>
                     </div>
                     <textarea id="staff_q7" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -488,7 +573,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">8</span>
-                        <h4>كيف تتعامل مع لاعب جديد؟</h4>
+                        <h4 id="staffQ8">كيف تتعامل مع لاعب جديد؟</h4>
                     </div>
                     <textarea id="staff_q8" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -498,13 +583,13 @@
             <div id="devQuestions" class="questions-section">
                 <div class="section-header">
                     <i class="fas fa-code"></i>
-                    <h3>أسئلة المطورين</h3>
+                    <h3 id="devQTitle">أسئلة المطورين</h3>
                 </div>
 
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">1</span>
-                        <h4>ما هي البلوجنات التي تجيدها؟</h4>
+                        <h4 id="devQ1">هل يمكنك صنع بلوجنات ؟</h4>
                     </div>
                     <textarea id="dev_q1" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -512,15 +597,15 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">2</span>
-                        <h4>كيف تحل تعارض بين بلوجينين؟</h4>
+                        <h4 id="devQ2">إلى أي مدى تقدر تصنع بلوجنات؟ (إجابة مفصلة)</h4>
                     </div>
-                    <textarea id="dev_q2" placeholder="اكتب إجابتك..." rows="3"></textarea>
+                    <textarea id="dev_q2" placeholder="اكتب إجابتك بالتفصيل..." rows="4"></textarea>
                 </div>
 
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">3</span>
-                        <h4>كيف تتعامل مع ثغرة أمنية؟</h4>
+                        <h4 id="devQ3">هل لديك بلوجنات عاملها بنفسك؟</h4>
                     </div>
                     <textarea id="dev_q3" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -528,7 +613,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">4</span>
-                        <h4>أفضل بلوجين للحماية برأيك؟</h4>
+                        <h4 id="devQ4">ايه افضل بلوجن حماية برأيك؟</h4>
                     </div>
                     <textarea id="dev_q4" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -536,7 +621,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">5</span>
-                        <h4>كيف تحسن أداء سيرفر بطيء؟</h4>
+                        <h4 id="devQ5">هل تريد مقابل لشغلك ولا تريد تساعد لله ؟</h4>
                     </div>
                     <textarea id="dev_q5" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -544,7 +629,7 @@
                 <div class="question-card">
                     <div class="question-header">
                         <span class="question-number">6</span>
-                        <h4>كيف تنشئ نظام رتب متكامل؟</h4>
+                        <h4 id="devQ6">كيف تحل مشاكل البلوجنات؟</h4>
                     </div>
                     <textarea id="dev_q6" placeholder="اكتب إجابتك..." rows="3"></textarea>
                 </div>
@@ -552,11 +637,11 @@
 
             <button type="button" class="submit-btn" onclick="submitForm()">
                 <i class="fab fa-discord"></i>
-                إرسال الطلب
+                <span id="submitBtnText">إرسال الطلب</span>
             </button>
         </form>
 
-        <div class="footer">
+        <div class="footer" id="footerText">
             Algayar · جميع الحقوق محفوظة
         </div>
     </div>
@@ -564,6 +649,161 @@
     <script>
         // Webhook URL
         const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1475955938052538388/u2ds69vQeSkXyz93F-o3EmZaKWyEAdlxXevGpyBqkUHbY_V3GudtTHdeMYucDLR4mwi-';
+
+        // ترجمة النصوص
+        const translations = {
+            ar: {
+                siteTitle: '<i class="fas fa-crown"></i> Algayar',
+                siteSubtitle: 'التقديم للإدارة - املأ المعلومات وأجب على الأسئلة',
+                testBtn: 'اختبار Discord',
+                nameLabel: 'الاسم',
+                ageLabel: 'العمر',
+                mcLabel: 'ماين كرافت',
+                discordLabel: 'ديسكورد',
+                expLabel: 'الخبرة',
+                interactLabel: 'التفاعل',
+                expDefault: 'اختر',
+                expBeginner: 'مبتدئ',
+                expIntermediate: 'متوسط',
+                expAdvanced: 'متقدم',
+                expExpert: 'خبير',
+                interactDefault: 'اختر',
+                interact1: '1-3 ساعات',
+                interact2: '3-6 ساعات',
+                interact3: '6-9 ساعات',
+                interact4: '9+ ساعات',
+                roleTitle: 'اختر المنصب:',
+                devRole: 'مطور',
+                staffRole: 'إداري',
+                staffQTitle: 'أسئلة الإداريين',
+                staffQ1: 'كيف تتعامل مع لاعب يخالف القوانين؟',
+                staffQ2: 'ماذا تفعل في شجار بين لاعبين؟',
+                staffQ3: 'كيف تتصرف مع لاعب يستخدم برامج غش؟',
+                staffQ4: 'صديقك يخالف القوانين، ماذا تفعل؟',
+                staffQ5: 'كيف تنشر الأجواء الإيجابية؟',
+                staffQ6: 'كيف تتعامل مع شكوى ضد إداري؟',
+                staffQ7: 'ما هي أولوياتك كإداري؟',
+                staffQ8: 'كيف تتعامل مع لاعب جديد؟',
+                devQTitle: 'أسئلة المطورين',
+                devQ1: 'هل يمكنك صنع بلوجنات ؟',
+                devQ2: 'إلى أي مدى تقدر تصنع بلوجنات؟ (إجابة مفصلة)',
+                devQ3: 'هل لديك بلوجنات عاملها بنفسك؟',
+                devQ4: 'ايه افضل بلوجن حماية برأيك؟',
+                devQ5: 'هل تريد مقابل لشغلك ولا تريد تساعد لله ؟',
+                devQ6: 'كيف تحل مشاكل البلوجنات؟',
+                submitBtn: 'إرسال الطلب',
+                footer: 'Algayar · جميع الحقوق محفوظة',
+                langBtn: 'EN'
+            },
+            en: {
+                siteTitle: '<i class="fas fa-crown"></i> Algayar',
+                siteSubtitle: 'Staff Application - Fill in your information',
+                testBtn: 'Test Discord',
+                nameLabel: 'Full Name',
+                ageLabel: 'Age',
+                mcLabel: 'Minecraft',
+                discordLabel: 'Discord',
+                expLabel: 'Experience',
+                interactLabel: 'Playtime',
+                expDefault: 'Choose',
+                expBeginner: 'Beginner',
+                expIntermediate: 'Intermediate',
+                expAdvanced: 'Advanced',
+                expExpert: 'Expert',
+                interactDefault: 'Choose',
+                interact1: '1-3 hours',
+                interact2: '3-6 hours',
+                interact3: '6-9 hours',
+                interact4: '9+ hours',
+                roleTitle: 'Choose position:',
+                devRole: 'Developer',
+                staffRole: 'Staff',
+                staffQTitle: 'Staff Questions',
+                staffQ1: 'How do you handle rule breakers?',
+                staffQ2: 'What do you do during player fights?',
+                staffQ3: 'How do you deal with hackers?',
+                staffQ4: 'Your friend breaks rules, what do you do?',
+                staffQ5: 'How do you promote positivity?',
+                staffQ6: 'How do you handle staff complaints?',
+                staffQ7: 'What are your priorities as staff?',
+                staffQ8: 'How do you welcome new players?',
+                devQTitle: 'Developer Questions',
+                devQ1: 'Can you make plugins?',
+                devQ2: 'To what extent can you make plugins? (Detailed answer)',
+                devQ3: 'Do you have plugins you made yourself?',
+                devQ4: 'Whats the best security plugin in your opinion?',
+                devQ5: 'Do you want payment or you want to help for God?',
+                devQ6: 'How do you solve plugin problems?',
+                submitBtn: 'Submit Application',
+                footer: 'Algayar · All rights reserved',
+                langBtn: 'AR'
+            }
+        };
+
+        let currentLang = 'ar';
+
+        // تبديل اللغة
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.body.className = currentLang;
+            document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            
+            // تحديث جميع النصوص
+            updateTexts();
+        }
+
+        function updateTexts() {
+            const t = translations[currentLang];
+            
+            document.getElementById('siteTitle').innerHTML = t.siteTitle;
+            document.getElementById('siteSubtitle').textContent = t.siteSubtitle;
+            document.getElementById('testBtnText').textContent = t.testBtn;
+            document.getElementById('nameLabel').querySelector('span').textContent = t.nameLabel;
+            document.getElementById('ageLabel').querySelector('span').textContent = t.ageLabel;
+            document.getElementById('mcLabel').querySelector('span').textContent = t.mcLabel;
+            document.getElementById('discordLabel').querySelector('span').textContent = t.discordLabel;
+            document.getElementById('expLabel').querySelector('span').textContent = t.expLabel;
+            document.getElementById('interactLabel').querySelector('span').textContent = t.interactLabel;
+            
+            // تحديث خيارات القوائم
+            document.getElementById('expDefault').textContent = t.expDefault;
+            document.getElementById('expBeginner').textContent = t.expBeginner;
+            document.getElementById('expIntermediate').textContent = t.expIntermediate;
+            document.getElementById('expAdvanced').textContent = t.expAdvanced;
+            document.getElementById('expExpert').textContent = t.expExpert;
+            
+            document.getElementById('interactDefault').textContent = t.interactDefault;
+            document.getElementById('interact1').textContent = t.interact1;
+            document.getElementById('interact2').textContent = t.interact2;
+            document.getElementById('interact3').textContent = t.interact3;
+            document.getElementById('interact4').textContent = t.interact4;
+            
+            document.getElementById('roleTitle').textContent = t.roleTitle;
+            document.getElementById('devRole').textContent = t.devRole;
+            document.getElementById('staffRole').textContent = t.staffRole;
+            
+            document.getElementById('staffQTitle').textContent = t.staffQTitle;
+            document.getElementById('staffQ1').textContent = t.staffQ1;
+            document.getElementById('staffQ2').textContent = t.staffQ2;
+            document.getElementById('staffQ3').textContent = t.staffQ3;
+            document.getElementById('staffQ4').textContent = t.staffQ4;
+            document.getElementById('staffQ5').textContent = t.staffQ5;
+            document.getElementById('staffQ6').textContent = t.staffQ6;
+            document.getElementById('staffQ7').textContent = t.staffQ7;
+            document.getElementById('staffQ8').textContent = t.staffQ8;
+            
+            document.getElementById('devQTitle').textContent = t.devQTitle;
+            document.getElementById('devQ1').textContent = t.devQ1;
+            document.getElementById('devQ2').textContent = t.devQ2;
+            document.getElementById('devQ3').textContent = t.devQ3;
+            document.getElementById('devQ4').textContent = t.devQ4;
+            document.getElementById('devQ5').textContent = t.devQ5;
+            document.getElementById('devQ6').textContent = t.devQ6;
+            
+            document.getElementById('submitBtnText').textContent = t.submitBtn;
+            document.getElementById('footerText').textContent = t.footer;
+            document.getElementById('langText').textContent = t.langBtn;
+        }
 
         // Show/hide questions based on role
         document.querySelectorAll('input[name="role"]').forEach(radio => {
@@ -596,12 +836,12 @@
                 });
 
                 if (response.ok) {
-                    showAlert('✅ تم الإرسال بنجاح', 'success');
+                    showAlert(currentLang === 'ar' ? '✅ تم الإرسال بنجاح' : '✅ Sent successfully', 'success');
                 } else {
-                    showAlert('❌ فشل الإرسال', 'error');
+                    showAlert(currentLang === 'ar' ? '❌ فشل الإرسال' : '❌ Failed', 'error');
                 }
             } catch (error) {
-                showAlert('❌ خطأ في الاتصال', 'error');
+                showAlert(currentLang === 'ar' ? '❌ خطأ في الاتصال' : '❌ Connection error', 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
@@ -621,12 +861,12 @@
 
             // Validation
             if (!fullname || !age || !minecraft || !discord || !experience || !interaction || !role) {
-                showAlert('❌ املأ جميع الحقول', 'error');
+                showAlert(currentLang === 'ar' ? '❌ املأ جميع الحقول' : '❌ Fill all fields', 'error');
                 return;
             }
 
             if (!discord.includes('#')) {
-                showAlert('❌ يوزر ديسكورد غير صحيح (مثال: name#1234)', 'error');
+                showAlert(currentLang === 'ar' ? '❌ يوزر ديسكورد غير صحيح' : '❌ Invalid Discord username', 'error');
                 return;
             }
 
@@ -636,30 +876,22 @@
                 ['dev_q1','dev_q2','dev_q3','dev_q4','dev_q5','dev_q6'] : 
                 ['staff_q1','staff_q2','staff_q3','staff_q4','staff_q5','staff_q6','staff_q7','staff_q8'];
 
-            const questionTexts = isDev ? [
-                'ما هي البلوجنات التي تجيدها؟',
-                'كيف تحل تعارض بين بلوجينين؟',
-                'كيف تتعامل مع ثغرة أمنية؟',
-                'أفضل بلوجين للحماية برأيك؟',
-                'كيف تحسن أداء سيرفر بطيء؟',
-                'كيف تنشئ نظام رتب متكامل؟'
-            ] : [
-                'كيف تتعامل مع لاعب يخالف القوانين؟',
-                'ماذا تفعل في شجار بين لاعبين؟',
-                'كيف تتصرف مع لاعب يستخدم برامج غش؟',
-                'صديقك يخالف القوانين، ماذا تفعل؟',
-                'كيف تنشر الأجواء الإيجابية؟',
-                'كيف تتعامل مع شكوى ضد إداري؟',
-                'ما هي أولوياتك كإداري؟',
-                'كيف تتعامل مع لاعب جديد؟'
-            ];
+            const questionTexts = isDev ? 
+                (currentLang === 'ar' ? 
+                    ['هل يمكنك صنع بلوجنات ؟','إلى أي مدى تقدر تصنع بلوجنات؟ (إجابة مفصلة)','هل لديك بلوجنات عاملها بنفسك؟','ايه افضل بلوجن حماية برأيك؟','هل تريد مقابل لشغلك ولا تريد تساعد لله ؟','كيف تحل مشاكل البلوجنات؟'] :
+                    ['Can you make plugins?','To what extent can you make plugins? (Detailed answer)','Do you have plugins you made yourself?','Whats the best security plugin in your opinion?','Do you want payment or you want to help for God?','How do you solve plugin problems?']
+                ) : 
+                (currentLang === 'ar' ?
+                    ['كيف تتعامل مع لاعب يخالف القوانين؟','ماذا تفعل في شجار بين لاعبين؟','كيف تتصرف مع لاعب يستخدم برامج غش؟','صديقك يخالف القوانين، ماذا تفعل؟','كيف تنشر الأجواء الإيجابية؟','كيف تتعامل مع شكوى ضد إداري؟','ما هي أولوياتك كإداري؟','كيف تتعامل مع لاعب جديد؟'] :
+                    ['How do you handle rule breakers?','What do you do during player fights?','How do you deal with hackers?','Your friend breaks rules?','How do you promote positivity?','How do you handle staff complaints?','What are your priorities?','How do you welcome new players?']
+                );
 
             // Check answers and build message
             let answersText = '';
             for (let i = 0; i < questionIds.length; i++) {
                 const answer = document.getElementById(questionIds[i]).value.trim();
                 if (!answer) {
-                    showAlert('❌ أجب على جميع الأسئلة', 'error');
+                    showAlert(currentLang === 'ar' ? '❌ أجب على جميع الأسئلة' : '❌ Answer all questions', 'error');
                     return;
                 }
                 answersText += `**${i+1}.** ${questionTexts[i]}\n\`\`\`${answer}\`\`\`\n`;
@@ -669,7 +901,7 @@
             const discordMessage = {
                 embeds: [
                     {
-                        title: `📋 تقديم جديد - ${isDev ? 'مطور' : 'إداري'}`,
+                        title: `📋 ${isDev ? 'مطور' : 'إداري'} جديد - ${fullname}`,
                         color: isDev ? 0x10b981 : 0x8b5cf6,
                         fields: [
                             {
@@ -709,16 +941,16 @@
                 });
 
                 if (response.ok) {
-                    showAlert('✅ تم إرسال الطلب', 'success');
+                    showAlert(currentLang === 'ar' ? '✅ تم إرسال الطلب' : '✅ Application sent', 'success');
                     document.getElementById('applicationForm').reset();
                     document.getElementById('devQuestions').classList.remove('active');
                     document.getElementById('staffQuestions').classList.remove('active');
                     document.querySelectorAll('input[name="role"]').forEach(r => r.checked = false);
                 } else {
-                    showAlert('❌ فشل الإرسال', 'error');
+                    showAlert(currentLang === 'ar' ? '❌ فشل الإرسال' : '❌ Failed', 'error');
                 }
             } catch (error) {
-                showAlert('❌ خطأ في الاتصال', 'error');
+                showAlert(currentLang === 'ar' ? '❌ خطأ في الاتصال' : '❌ Connection error', 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
